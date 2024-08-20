@@ -2,8 +2,7 @@
 -- 2 - T-SQL - Bancos de Dados, SGBDR, Tipos de Dados - SQL Server....
 -- 3 - T-SQL - CREATE DATABASE - Criar Banco de Dados - SQL Server....
 -- 4 - T-SQL - CONSTRAINTS (Restrições) - PRIMARY KEY, NOT NULL, etc - SQL Server....
-create database db_Biblioteca
-on primary (
+create database db_Biblioteca on primary(
 	name = db_Biblioteca,
 	filename = 'C:\SQL\db_Biblioteca.MDF',
 	size = 6 mb,
@@ -43,9 +42,10 @@ create table tbl_editoras(
 sp_help tbl_autores
 
 -- 6 - T-SQL - IDENTITY - Auto-incremento de valores em colunas - SQL Server....
-create table tbl_teste_identidade
-(ID_Teste smallint primary key identity,
-valor smallint not null)
+create table tbl_teste_identidade(
+	ID_Teste smallint primary key identity,
+	valor smallint not null
+)
 
 insert into tbl_teste_identidade(valor)values(10)
 insert into tbl_teste_identidade(valor)values(20)
@@ -71,3 +71,65 @@ constraint fk_id_editora foreign key(ID_editora)
 references tbl_editoras
 
 drop table tbl_teste_identidade
+
+-- 8 - T-SQL - INSERT INTO ... VALUES - Inserir dados nas Tabelas - SQL Server...
+insert into tbl_Autores(ID_Autor, Nome_Autor, Sobrenome_Autor)values(1, 'Daniel', 'Barret')
+insert into tbl_Autores(ID_Autor, Nome_Autor, Sobrenome_Autor)values(2, 'Gerald', 'Carter')
+insert into tbl_Autores(ID_Autor, Nome_Autor, Sobrenome_Autor)values(3, 'Mark', 'Sobell')
+insert into tbl_Autores(ID_Autor, Nome_Autor, Sobrenome_Autor)values(4, 'Richard', 'Blum')
+
+-- Inserir Dados na Tabela de Editora...
+insert into tbl_editoras(Nome_Editora)values('Prenticel Hall')
+insert into tbl_editoras(Nome_Editora)values('O´Reilly')
+insert into tbl_editoras(Nome_Editora)values('Microsoft')
+insert into tbl_editoras(Nome_Editora)values('Wiley')
+
+use db_Biblioteca
+
+-- Inserir Dados na Tabela de Livro...
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('Linux Command Line and Shell', 143858969, '20091221', 68.35, 5, 4)
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('SSH, the Secure Shell', 127657889, '20091221', 58.30, 1, 2)
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('Using Samba', 123456789, '20001221', 61.45, 2, 2)
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('Fedora', 143858087, '20083111', 78.35, 5, 4)
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('Windows Servers 2012 Inside', 127657234, '20003224', 48.30, 1, 2)
+insert into tbl_Livro(Nome_Livro, ISBN, Data_Pub, Preco_Livro, ID_Autor, ID_editora)values('Microsoft Exchange', 123456570, '20003331', 31.45, 2, 2)
+
+select * from tbl_Livro
+
+-- 9 - T-SQL - TRUNCATE TABLE - Excluindo todos os dados de uma Tabela - SQL Server....
+-- 10 - T-SQL - SELECT FROM - Consultas simples a uma Tabela - SQL Server....
+use db_Biblioteca
+
+select Nome_Autor from tbl_autores
+
+Select * from tbl_Autores
+
+select Nome_Autor, Sobrenome_Autor from tbl_autores
+
+-- 11 - T-SQL - ORDER BY - Consultas com ordenação de Colunas - SQL Server....
+select * from tbl_Livro order by Nome_Livro desc
+
+select Nome_Autor from tbl_autores order by Nome_Autor
+
+-- 12 - T-SQL - DISTINCT - Consultas com valores distintos, sem repetição - SQL Server....
+use db_Biblioteca
+
+select distinct ID_Autor from tbl_Livro
+
+-- 13 - T-SQL - WHERE - Filtrando registros em uma consulta - SQL Server....
+select * from tbl_Livro
+where ID_Autor = '1'
+
+select ID_Autor from tbl_autores
+where Sobrenome_Autor = 'Stanek'
+
+-- 14 - T-SQL - AND e OR - Operadores Lógicos - SQL Server...
+use db_Biblioteca
+
+-- Usando a clásula AND....
+select * from tbl_Livro where ID_Livro > 101 and ID_Autor < 3
+
+-- Usando a clásula OR....
+select * from tbl_Livro where ID_Livro > 101 or ID_Autor < 3
+
+-- Comando UPDATE - Atualizando registros em uma tabela no SQL Server....
