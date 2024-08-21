@@ -133,3 +133,54 @@ select * from tbl_Livro where ID_Livro > 101 and ID_Autor < 3
 select * from tbl_Livro where ID_Livro > 101 or ID_Autor < 3
 
 -- Comando UPDATE - Atualizando registros em uma tabela no SQL Server....
+use db_Biblioteca
+
+select * from tbl_Livro;
+
+-- SINTAXE UPDATE...
+-- UPDATE tabela...
+-- SET coluna = valor...
+-- WHERE "filtro"...
+
+-- Exemplo 01:
+update tbl_Livro set Preco_Livro = 65.45
+where ID_Livro = 112;
+
+update tbl_autores set Sobrenome_Autor = 'Cartman'
+where ID_Autor = 2;
+
+update tbl_Livro set Preco_Livro = 80.00,
+ISBN = '127657889' where ID_Livro = 112
+
+-- 15 - T-SQL - TOP -- Especificar número de registros a retornar - SQL Server....
+use db_Biblioteca
+select top 10 PERCENT Nome_Livro from tbl_Livro
+
+-- 16 - T-SQL - Alias com AS - Nomes alternativos para colunas - SQL Server....
+use db_Biblioteca
+select Nome_Livro as Livro, ID_Autor as Autor
+from tbl_Livro
+
+-- 17 - T-SQL - UNION - Unir resultados de declarações SELECT - SQL Server....
+select ID_Autor from tbl_autores 
+union
+select ID_Autor from tbl_Livro
+
+-- 18 - T-SQL - SELECT INTO - Criar nova tabela a partir de uma tabela existente - SQL Server...
+select ID_Livro, Nome_Livro, ISBN into Livro_ISBN from tbl_Livro
+where ID_Livro > 2
+
+select * from Livro_ISBN
+
+select * into tbl_Livro_Backup from tbl_Livro
+
+-- 19 - T-SQL - Funções Agregadas - SUM, COUNT, MAX, MIN, AVG - SQL Server....
+select count(*) from tbl_autores
+
+select max(Preco_Livro)from tbl_Livro
+
+select min(Preco_Livro) from tbl_Livro
+
+select avg(Preco_Livro) from tbl_Livro
+
+select sum(Preco_Livro) from tbl_Livro
