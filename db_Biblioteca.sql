@@ -143,14 +143,11 @@ select * from tbl_Livro;
 -- WHERE "filtro"...
 
 -- Exemplo 01:
-update tbl_Livro set Preco_Livro = 65.45
-where ID_Livro = 112;
+update tbl_Livro set Preco_Livro = 65.45 where ID_Livro = 112;
 
-update tbl_autores set Sobrenome_Autor = 'Cartman'
-where ID_Autor = 2;
+update tbl_autores set Sobrenome_Autor = 'Cartman' where ID_Autor = 2;
 
-update tbl_Livro set Preco_Livro = 80.00,
-ISBN = '127657889' where ID_Livro = 112
+update tbl_Livro set Preco_Livro = 80.00, ISBN = '127657889' where ID_Livro = 112
 
 -- 15 - T-SQL - TOP -- Especificar número de registros a retornar - SQL Server....
 use db_Biblioteca
@@ -158,8 +155,8 @@ select top 10 PERCENT Nome_Livro from tbl_Livro
 
 -- 16 - T-SQL - Alias com AS - Nomes alternativos para colunas - SQL Server....
 use db_Biblioteca
-select Nome_Livro as Livro, ID_Autor as Autor
-from tbl_Livro
+
+select Nome_Livro as Livro, ID_Autor as Autor from tbl_Livro
 
 -- 17 - T-SQL - UNION - Unir resultados de declarações SELECT - SQL Server....
 select ID_Autor from tbl_autores 
@@ -177,7 +174,7 @@ select * into tbl_Livro_Backup from tbl_Livro
 -- 19 - T-SQL - Funções Agregadas - SUM, COUNT, MAX, MIN, AVG - SQL Server....
 select count(*) from tbl_autores
 
-select max(Preco_Livro)from tbl_Livro
+select max(Preco_Livro) from tbl_Livro
 
 select min(Preco_Livro) from tbl_Livro
 
@@ -186,8 +183,7 @@ select avg(Preco_Livro) from tbl_Livro
 select sum(Preco_Livro) from tbl_Livro
 
 -- 20 - T-SQL - BETWEEN - Seleção de Intervalos em Registros - SQL Server....
-select * from tbl_Livro
-where Data_Pub between '20040517' and '20100515'
+select * from tbl_Livro where Data_Pub between '20040517' and '20100515'
 
 select Nome_Livro as Livro, Preco_Livro as Preco
 from tbl_Livro
@@ -212,3 +208,67 @@ select Nome_Livro from tbl_Livro where Nome_Livro like '_i%'
 select Nome_Livro from tbl_Livro where Nome_Livro not like 'M%'
 
 -- 22 - T-SQL - JOINS e INNER JOIN - Selecionar dados de duas ou mais tabelas - SQL Server....
+select * from tbl_Livro inner join tbl_autores on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+
+select tbl_Livro.Nome_Livro, tbl_Livro.ISBN, tbl_autores.Nome_Autor from tbl_Livro
+inner join tbl_autores on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+
+-- Usando Aliases:
+select L.Nome_Livro, E.Nome_editora from  tbl_Livro as L
+inner join tbl_editoras as E on L.ID_editora = E.ID_Editora
+
+-- 23 - T-SQL - OUTER JOINS - LEFT e RIGHT - Selecionar dados de várias tabelas - SQL Server.....
+
+-- Exemplo LEFT JOIN:
+select * from tbl_Livro
+
+select * from tbl_autores left join tbl_Livro on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+
+select * from tbl_autores left join tbl_Livro on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+where tbl_autores .ID_Autor is null
+
+-- Exemplo RIGHT JOIN:
+select * from tbl_Livro right join tbl_autores on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+where tbl_autores .ID_Autor is null
+
+select * from tbl_autores right join tbl_Livro on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+where tbl_autores .ID_Autor is null
+
+-- 24 - T-SQL - FULL OUTER JOIN - Selecionar dados de várias tabelas - SQL Server.....
+-- Exemplo FULL JOIN:
+
+use db_Biblioteca
+
+select Li.Nome_Livro, Li.ID_autor, Au.Nome_autor
+from tbl_Livro as Li full join tbl_autores as Au
+on Li.ID_Autor = AU.ID_Autor where Li.ID_Autor is null
+or Au.ID_Autor is null
+
+-- 25 - T-SQL - Operadores IN e NOT IN - Filtros de Múltiplas Condições - SQL Server....
+use db_Biblioteca
+
+select * from tbl_Livro where ID_Autor in(1, 2)
+
+select * from tbl_Livro where ID_Autor not in(1, 2)
+
+-- 26 - T-SQL - Campos Calculados - Cálculos - SQL Server....
+use test
+-- Campo calculado
+create table Produto(
+	codProduto smallint, NomeProduto varchar(20),
+	Preco money, Quant smallint,
+	Total as (Preco * Quant)
+)
+
+select * from Produto
+
+insert into Produto values(1, 'Mouse', 15.00, 2)
+insert into Produto values(2, 'Teclado', 18.00, 1)
+insert into Produto values(3, 'Monitor', 250.00, 21)
+insert into Produto values(4, 'Pen-Driver', 25.00, 2)
+insert into Produto values(5, 'SSD', 300.00, 3)
+insert into Produto values(6, 'HD - Externo', 280.00, 12)
+
+select * from Produto
+
+select sum(Total) from Produto
