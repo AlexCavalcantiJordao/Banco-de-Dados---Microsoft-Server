@@ -184,3 +184,31 @@ select min(Preco_Livro) from tbl_Livro
 select avg(Preco_Livro) from tbl_Livro
 
 select sum(Preco_Livro) from tbl_Livro
+
+-- 20 - T-SQL - BETWEEN - Seleção de Intervalos em Registros - SQL Server....
+select * from tbl_Livro
+where Data_Pub between '20040517' and '20100515'
+
+select Nome_Livro as Livro, Preco_Livro as Preco
+from tbl_Livro
+where Preco_Livro between 40.00 and 60.00
+
+-- 21 - T-SQL - LIKE e NOT LIKE - Filtrar por padrões específicos - SQL Server....
+
+/* 
+
+% : Qualquer cadeia de 0 - (Zero) ou mais caracteres.....
+
+_ : Qualquer caracter único.....
+
+[] : Qualquer caracter único no intervalo ou conjunto especificado ([a-h]; [aeiou]).....
+
+[^] : Qualquer caracter único que não esteja no intervalo ou conjunto especificado.....
+
+*/
+
+select Nome_Livro from tbl_Livro where Nome_Livro like '_i%'
+
+select Nome_Livro from tbl_Livro where Nome_Livro not like 'M%'
+
+-- 22 - T-SQL - JOINS e INNER JOIN - Selecionar dados de duas ou mais tabelas - SQL Server....
