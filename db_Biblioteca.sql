@@ -272,3 +272,106 @@ insert into Produto values(6, 'HD - Externo', 280.00, 12)
 select * from Produto
 
 select sum(Total) from Produto
+
+-- 27 - T-SQL - Índices - CREATE INDEX - SQL Server....
+use db_Biblioteca
+
+create index indice_nome_livro on tbl_Livro(Nome_Livro)
+
+-- 28 - T-SQL - Regras - CREATE RULE - SQL Server....
+use db_Biblioteca
+
+select * from tbl_Livro
+
+create rule rl_preco as @valor > 10.00
+
+execute sp_bindrule rl_preco, 'tbl_Livro.Preco_Livro'
+
+update tbl_Livro set Preco_Livro = 50.00 where ID_Livro = 112
+
+update tbl_Livro set Preco_Livro = 10.90 where ID_Livro = 113
+
+-- 29 - T-SQL - Backup do Banco de Dados e Restauração - SQL Server....
+
+-- Exemplo como salvar os dados em backup no Banco de Dados:
+
+/*
+
+use Test
+go 
+backup database Test to disk = 'C:\arquivos\test.bak';
+go 
+
+select * fom Produtos
+
+*/
+
+-- 30 - T-SQL - Concatenação de Strings - SQL Server....
+
+use db_Biblioteca
+go
+
+select * from tbl_Livro
+
+-- Concatenação de Strings:
+-- É possível concatenar string usando-se o operador de concanetação +
+-- Sintaxe:
+-- string1 | string2 | coluna
+-- Exemplo:
+
+select 'Alex ' + 'Cavalcanti' as Nome
+
+select Nome_autor + ' ' + Sobrenome_autor as 'Nome Completo' from tbl_autores
+
+select 'Eu gosto do Livro' + Nome_Livro as 'Meu livro' from tbl_Livro
+where ID_autor = 2
+
+-- 32 - T-SQL - Cláusula WITH TIES - SQL Server....
+
+-- Clásula WITH TIES
+
+select top(3) WITH TIES Nome_Time, Pontos from tbl_times
+order by Pontos desc
+
+-- 33 - T-SQL - VIEWS (Exibições) - Criar, Alterar e Excluir - SQL Server....
+create view vw_LivrosAutores
+as select tbl_Livro.Nome_Livro as Livro,
+tbl_autores.Nome_Autor as Autor
+from tbl_Livro
+inner join tbl_autores
+on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+
+select Livro, Autor from vw_LivrosAutores
+where Livro like 'S%'
+
+alter view vw_LivrosAutores as
+select tbl_Livro.Nome_Livro Livro, tbl_autores.Nome_Autor
+as Autor, Preco_Livro as Valor from tbl_Livro inner join tbl_autores
+on tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+
+select * from vw_LivrosAutores
+
+-- drop view nome_exibição
+
+drop view vw_LivrosAutores
+
+-- 34 - T-SQL - Subconsultas (subqueries) com Tabelas Derivadas - SQL Server....
+select(select 'Alex') as subconsultas;
+
+-- Consulta inicial, sem as técnicas apresentada:
+select CL.Nome_Cliente as Cliente,
+PR.Preco_Produto * CO.Quantidade as Total
+from Cliente as CL
+inner join Compras as CO 
+on CL.ID_Clientes = CO.ID_Cliente
+inner join Produtos as PR
+on CO.ID_Produto = PR.ID_Produto
+
+-- Subconsultas com Tabelas Derivadas - Aplicações:
+select Resultado.Cliente, SUM(Resultado.Total) as Total from
+(select CL.Nome_Cliente as Cliente, PR.Preco_Produto * CO.Quantidade as Total
+from Clientes as CL inner join Compras as CO on CL.ID_Cliente = CL.ID_Cliente
+inner join Produtos as PR on CO.ID_Produto = PR.ID_Produto) as Resultado group by
+Resultado.Cliente order by Total
+
+-- 35 - T-SQL - CTE - Common Table Expression (subconsultas) - SQL Server...
