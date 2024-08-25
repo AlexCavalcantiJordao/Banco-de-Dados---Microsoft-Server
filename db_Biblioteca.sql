@@ -375,3 +375,96 @@ inner join Produtos as PR on CO.ID_Produto = PR.ID_Produto) as Resultado group b
 Resultado.Cliente order by Total
 
 -- 35 - T-SQL - CTE - Common Table Expression (subconsultas) - SQL Server...
+
+-- Subconsultas e CTE - Com tabelas Derivadas:
+with ConsultaCTE(Cliente, Total)
+as (select CL.Nome_Cliente as Cliente,
+PR.Preco_Produto * CO.Quantidade as Total from Clientes as CL
+inner join Compras as CO on CL.ID_Cliente = CO.ID_Cliente
+inner join Produtos as PR on CO.ID_Produto = PR.ID_Produto)
+select Cliente, SUM(Total) as ValorTotal from ConsultaCTE
+group by Cliente
+order by ValorTotal
+
+-- 36 - T-SQL - Variáveis - Declaração e atribuição de valores no SQL Server....
+declare @valor int,
+		@texto varchar(40),
+		@data_nasc date,
+		@nada money
+set @valor = 50
+set @texto = 'Alex'
+set @data_nasc = getdate()
+select @valor as Valor, @texto as Texto, @data_nasc as 'Data de Nascimento', @nada as Salário
+
+declare @livro varchar(40)
+select @livro = nome_livro from tbl_livro
+where ID_Livro = 112
+select @livro as 'Nome do Livro'
+
+-- Exemplo:
+declare @preco money, @quantidade int, @nome varchar(30) set @quantidade = 5
+
+select @preco = Preco_Livro, @nome = Nome_Livro from tbl_Livro where ID_Livro = 112
+
+select @nome as 'Nome do Livro', @preco * @quantidade as 'Preço dos  Livros'
+
+-- 37 - Conversão de Tipos de Dados no SQL Server com Cast e Convert....
+
+-- CAST:
+select 'O preço do livro ' + Nome_Livro + ' é de : R$ ' + cast(Preco_Livro as varchar(6)) as Item from tbl_livro
+where ID_Autor = 2
+
+-- CONVERT:
+select 'O preço do livro ' + Nome_Livro + ' é de : R$ ' + CONVERT(varchar(6), Preco_Livro) from tbl_livro
+
+-- Exemplo de Data com CONVERT:
+
+-- Sem alterar estilo:
+select 'A data de publicação' + convert(varchar(20), Data_Pub) from tbl_livro
+where ID_Livro = 112
+
+-- Alterando estilo para britânico / Frânces (103):
+select 'A data de publicação' + convert(varchar(15), Data_Pub, 103) from tbl_livro
+where ID_Livro = 113
+
+-- Condicional IF / ELSE no SQL Server - Estrutura de decisão....
+
+-- Primeiro Exemplo:
+declare @numero int,
+		@texto varchar(10)
+
+set @numero = 20
+set @texto = 'Alex'
+
+if @numero = 20
+	  select 'Número correto'
+if @texto = 'Alex'
+	 begin
+		set @numero = 30
+		select @numero
+	 end;
+else
+	 begin
+		set @numero = 40
+		select 'Número incorreto'
+	 end;
+
+-- Exemplo de Consultas de Escola:
+declare @NOME varchar(30),
+		@MEDIA real,
+		@RESULTADO varchar(10)
+select
+	@NOME = nome_aluno,
+	@MEDIA = (tbl_alunos.nota1 + tbl_alunos.nota2 + tbl_alunos.nota3 + tbl_alunos.nota4) / 4.00
+from tbl_alunos
+where nome_aluno = 'Alex'
+	if @MEDIA >= 7.00
+	begin
+		select @RESULTADO = 'Aprovado';
+	end;
+	else
+	begin
+		select @RESULTADO = 'Reprovado';
+	end;
+
+	select 'O aluno' + @NOME + ' está ' + @RESULTADO + ' com média ' + cast(@MEDIA as varchar);
