@@ -1,0 +1,3 @@
+-- Stored Procedures - Criação e Execução no SQL Server - parte 01....
+create procedure Teste
+as select 'Bóson Treinamento' as Nome

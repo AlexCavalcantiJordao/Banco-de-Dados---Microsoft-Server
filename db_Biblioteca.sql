@@ -449,22 +449,33 @@ else
 		select 'Número incorreto'
 	 end;
 
--- Exemplo de Consultas de Escola:
-declare @NOME varchar(30),
-		@MEDIA real,
-		@RESULTADO varchar(10)
-select
-	@NOME = nome_aluno,
-	@MEDIA = (tbl_alunos.nota1 + tbl_alunos.nota2 + tbl_alunos.nota3 + tbl_alunos.nota4) / 4.00
-from tbl_alunos
-where nome_aluno = 'Alex'
-	if @MEDIA >= 7.00
+-- Loop While no SQL Server - Estrutura de Repetição....
+
+-- Exemplo 2: Imprimir Livro e Preço dos livros de ID´s de 100 a 105
+declare @codigo int
+set @codigo = 100
+
+while @codigo < 106
 	begin
-		select @RESULTADO = 'Aprovado';
-	end;
-	else
-	begin
-		select @RESULTADO = 'Reprovado';
+	   select ID_Livro as ID, Nome_livro as Livro, Preco_Livro as Preco
+	   from tbl_livro where ID_Livro = @codigo set @codigo = @codigo + 1
 	end;
 
-	select 'O aluno' + @NOME + ' está ' + @RESULTADO + ' com média ' + cast(@MEDIA as varchar);
+-- Stored Procedures - Criação e Execução no SQL Server - parte 01....
+create procedure Teste
+as select 'Bóson Treinamento' as Nome
+
+exec Teste
+
+-- Exemplo 2:
+create procedure p_LivroValor as select Nome_Livro, Preco_livro from tbl_Livro
+
+exec sp_help p_LivroValor
+
+-- Criptografar Stored Procedure....
+create procedure p_LivroISBN with encryption as
+select Nome_Livro, ISBN from tbl_Livro
+
+exec p_LivroISBN
+
+-- Stored Procedures - Alteração e Parâmetros de Entrada no SQL Server - parte 02....
