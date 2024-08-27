@@ -470,6 +470,7 @@ exec Teste
 -- Exemplo 2:
 create procedure p_LivroValor as select Nome_Livro, Preco_livro from tbl_Livro
 
+-- Execução:
 exec sp_help p_LivroValor
 
 -- Criptografar Stored Procedure....
@@ -479,3 +480,116 @@ select Nome_Livro, ISBN from tbl_Livro
 exec p_LivroISBN
 
 -- Stored Procedures - Alteração e Parâmetros de Entrada no SQL Server - parte 02....
+alter procedure Teste (@par1 as int) as select @par1
+
+exec Teste 25
+
+alter procedure p_LivroValor
+(@ID smallint)
+as
+select Nome_Livro Livro,
+Preco_Livro as Preco
+from tbl_Livro where ID_Livro = @ID
+
+exec p_Livrovalor 112
+
+-- Múltiplos parâmetros de entrada....
+alter procedure Teste(@par1 as int, @par2 as varchar(20)) as
+begin
+	select @par1
+	select @par2
+end
+
+-- Executar passando um parâmetro:
+exec Teste 22, 'Laranja'  -- Sem posição....
+
+-- Execução:
+exec Teste @par1 = 25, @par2 = 'Abacate' -- Por nome....
+
+-- Stored Procedures - Parâmetros de Entrada e INSERT no SQL Server - parte 03....
+
+-- Outro exemplo com múltiplos parâmetros de entrada:
+alter procedure p_LivroValor(@ID smallint, @Preco money) as
+select Nome_Livro as Livro, Preco_Livro as Preco from tbl_Livro
+where ID_Livro > @ID and Preco_Livro > @Preco
+
+-- Execução:
+exec p_LivroValor @ID = 112, @Preco = 60
+
+-- Stored Procedures - Parâmetros de Saída e RETURN no SQL Server - parte 04.....
+-- Outro exemplo - Parâmetro....
+
+-- Desejo fornecer o ID e a quantidade de um título adquirido, e saber o valor total pago pelos livros:
+alter procedure p_LivroValor(
+	@Quantidade smallint,
+	@ID smallint
+)
+
+as
+select Nome_Livro as Livro, Preco_Livro * @Quantidade as Preco from tbl_Livro
+where ID_Livro = @ID
+
+-- Execução:
+exec p_LivroValor @ID = 112, @Quantidade = 10
+
+-- Exemplo - Inserção de Dados....
+create procedure p_insere_editora(
+	@nome varchar(50)
+)
+
+as
+insert into tbl_editoras(Nome_Editora)values(@nome)
+
+-- Execução e Verificação:
+exec p_insere_editora @nome = 'Editora' select * from tbl_editoras
+
+-- Stored Procedures - Parâmetros de Saída e RETURN no SQL Server - parte 04....
+-- Parâmetros com valor padrão:
+
+create procedure p_teste_valor_padrao(
+	@param1 int,
+	@param2 varchar(20) = 'Valor Padrão!'
+)
+
+as
+
+select 'Valor do parâmetros 1: ' + cast(@param1 as varchar)
+
+select 'Valor do parâmetros 2: ' + @param2
+
+-- Execução:
+exec p_teste_valor_padrao 30
+exec p_teste_valor_padrao @param1 = 40, @param2 = 'Valor Modificado'
+
+-- Parâmetro de Saída:
+alter procedure teste(@par1 as int output) as
+select @par1 *2 return
+
+-- Executar passando um parâmetro:
+declare @valor as int = 15
+exec teste @valor output
+print @valor
+
+-- Uso de RETURN:
+alter procedure p_LivroValor(
+	@Quantidade smallint,
+	@Cod smallint = -10,
+	@ID smallint
+)
+
+as
+set nocount on
+if @ID > 100
+	begin
+		select Nome_Livro as Livro, Preco_Livro * @Quantidade as Preco
+		from tbl_Livro
+		where ID_Livro = @ID
+		return 1
+	end
+ else
+	return @Cod
+
+-- Executar:
+declare @Codigo int
+exec @Codigo = p_LivroValor @ID = 112, @Quantidade = 10
+print @Codigo
