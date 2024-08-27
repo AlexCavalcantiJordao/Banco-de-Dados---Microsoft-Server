@@ -593,3 +593,56 @@ if @ID > 100
 declare @Codigo int
 exec @Codigo = p_LivroValor @ID = 112, @Quantidade = 10
 print @Codigo
+
+-- Funções Definidas pelo Usuário - Valor de Tabela Embutida - SQL Server - Parte 02....
+
+-- Função com Valor de Tabela Embutida (Inline)....
+-- Exemplo de Função de Valor de Tabela Embutida:
+create function retorna_itens(@valor real)
+returns table
+as
+return(
+	select L.Nome_Livro, A.Nome_Autor, E.Nome_Editora
+	from tbl_Livro as L
+	inner join tbl_autores as A
+	on L.ID_Autor = A.ID_Autor
+	inner join tbl_editoras as E
+	on L.ID_editora = E.ID_Editora
+	where L.Preco_Livro > @valor
+)
+
+-- Como usar:
+select Nome_livro, Nome_Autor from retorna_itens(62.00)
+
+-- Funções Definidas pelo Usuário - Valor de Tabela com Várias Instruções - SQL Server - Parte 03....
+-- Funções com Valor de Tabelas com Várias Instruções....
+
+-- Exemplo:
+create function multi_tabela()
+returns @valores table(
+	Nome_Livro varchar(50),
+	Data_Pub datetime, Nome_Editora varchar(50),
+	Preco_Livro money
+)
+as
+begin
+insert @valores(Nome_Livro, Data_Pub, Nome_Editora, Preco_Livro)
+	select L.Nome_Livro, L.Data_Pub, E.Nome_Editora, L.Preco_Livro
+	from tbl_Livro as L
+	inner join tbl_editoras as E
+	on L.ID_editora = E.ID_Editora
+return
+end
+
+-- Uso:
+select * from multi_tabela()
+
+-- Triggers - Definição e Tipos Instead Of e After - SQL Server - Parte 01....
+
+-- Triggers - Criação e Testes dos modos Instead Of e After - SQL Server - Parte 02....
+create trigger nome_tigger on tabela | view
+[with encryption]
+after | insert of
+[insert, update, delete]
+as
+codigo tigger
