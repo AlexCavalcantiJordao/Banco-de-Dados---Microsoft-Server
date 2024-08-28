@@ -640,9 +640,104 @@ select * from multi_tabela()
 -- Triggers - Definição e Tipos Instead Of e After - SQL Server - Parte 01....
 
 -- Triggers - Criação e Testes dos modos Instead Of e After - SQL Server - Parte 02....
-create trigger nome_tigger on tabela | view
-[with encryption]
-after | insert of
-[insert, update, delete]
+create trigger teste_trigger_after
+on tbl_editoras
+after insert
 as
-codigo tigger
+print 'Olá Mundo !';
+
+insert tbl_editoras values('Editora10')
+
+-- Trigger AFTER - Exemplo com Tabelas:
+create trigger trigger_after
+on tbl_editoras
+after insert
+as
+insert into tbl_autores values(25, 'José', 'da Silva')
+insert into tbl_Livro values('Livro110', '123456000', '20001010', 77, 25, 2)
+
+drop trigger teste_trigger_after
+
+select * from tbl_autores
+
+-- Criar um Trigger	INSTEAD OF - Exemplo:
+create trigger teste_trigger_insteadof
+on tbl_autores
+instead of insert
+as
+print 'Olá Mundo ! Não inserir o registro dessa vez.'
+
+insert into tbl_autores values(26, 'João', 'Moura')
+
+select * from tbl_autores
+
+-- Triggers - Habilitar, Desabilitar e verificar Status - SQL Server - Parte 03....
+
+-- Exemplo: Desabilitar um Trigger:
+alter table tbl_editoras
+enable trigger trigger_after
+
+-- Verificar a existência de trigger....
+
+-- Em uma tabela especifica:
+exec sp_helptrigger @tabname = tbl_editoras
+
+-- No Banco de Dados todo:
+use db_Biblioteca
+select * from sys.triggers
+where is_disabled = 1 or is_disabled = 0
+
+-- Triggers - Determinar colunas alteradas e função update() - SQL Server - Parte 04....
+create trigger trigger_after_autores
+on tbl_autores
+after insert, update
+as
+if update(nome_autor)
+	begin
+		print 'O nome do autor foi alterado.'
+	end
+else
+	begin
+		print 'Nome não foi modificado.'
+	end
+
+-- Atualizar o Nome do Autor:
+update tbl_autores
+set Nome_Autor = 'João'
+where ID_Autor = 10
+
+-- Atualizar o Sobrenome do Autor:
+update tbl_autores
+set Sobrenome_Autor = 'Guimarães'
+where ID_Autor = 10
+
+-- Triggers - Aninhamento e Triggers Recursivos - SQL Server - Parte 05....
+
+-- Trigger Recursivo - Exemplo:
+alter database db_Biblioteca
+set recurvise_trigger on
+
+create table tbl_trigger_recursivo(
+	Codigo int primary key
+)
+
+insert into tbl_trigger_recursivo values(1)
+
+select Codigo from tbl_trigger_recursivo
+
+-- Criar Trigger Recursivo:
+create trigger trigger_rec on tbl_trigger_recursivo
+after insert
+as
+declare @cod int
+select
+@cod = max(codigo)
+from teste_trigger
+if @cod < 10
+	begin
+		insert into tbl_trigger_recursivo select max(codigo) + 1 from tbl_trigger_recursivo
+	end
+else
+	begin
+		print 'Trigger Recursivo Finalizado'
+	end
