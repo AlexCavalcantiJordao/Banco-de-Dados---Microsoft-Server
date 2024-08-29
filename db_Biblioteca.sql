@@ -741,3 +741,21 @@ else
 	begin
 		print 'Trigger Recursivo Finalizado'
 	end
+
+-- Como renomear colunas e tabelas de um banco de dados no SQL Server....
+select * from sys.tables;
+
+select * from tbl_Livro;
+
+select * from tbl_autores;
+
+select * from tbl_editoras;
+
+sp_rename 'NomeTabelaAntigo',
+'NovoNomeTabela';
+
+sp_rename 'tbl_livros.Nome_Livro', 'Nome_Livro', 'Column';
+
+select * from sys.tables;
+
+-- O que é a Linguagem SQL - Apresentação, Sintaxe, História....
